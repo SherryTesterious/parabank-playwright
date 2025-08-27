@@ -1,6 +1,4 @@
 name: Playwright Tests
-
-# 当你 push 代码到 GitHub 时就会自动触发
 on: [push]
 
 jobs:
