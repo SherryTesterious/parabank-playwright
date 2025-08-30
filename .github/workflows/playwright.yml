@@ -4,6 +4,10 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      USERNAME: ${{ secrets.USERNAME }}
+      USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
+      BASE_URL: ${{ secrets.BASE_URL }}
 
     steps:
       - uses: actions/checkout@v4
