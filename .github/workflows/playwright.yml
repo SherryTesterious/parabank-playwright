@@ -1,9 +1,18 @@
 name: Playwright CI
-on: [push]
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }} 
+  cancel-in-progress: true
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes : 15
     env:
       USERNAME: ${{ secrets.USERNAME }}
       USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
@@ -32,5 +41,15 @@ jobs:
       - name: Install Playwright (Chromium only)
         run: npx playwright install --with-deps chromium
 
-      - name: Run tests 
-        run: npx playwright test 
+      - name: Run tests (HTML + GitHub annotation)
+        run: npx playwright test --reporter=github,html 
+     
+      # Always upload the report (pass or fail) to help investigation
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7
+        
